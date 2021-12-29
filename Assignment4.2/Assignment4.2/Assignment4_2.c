@@ -47,14 +47,18 @@ int check_first_element(char cmd[][20], int *i) {
                            "-",    "*",    "/",    "delete", "search",
                            "peek", "push", "add",  "insert"};
 
-  while ((*i < 19) && (strcmp(cmd_list[*i], cmd[0]) != 0))
+  while ((*i < 19) && (strcmp(cmd_list[*i], cmd[0]) != 0)) {
     (*i)++;
-  if (*i < 13)
+  }
+  if (*i < 13) {
     return 1;
-  else if (*i > 12 && *i < 17)
+  }
+  else if (*i > 12 && *i < 17) {
     return 2;
-  else if (*i > 16 && *i < 19)
+  }
+  else if (*i > 16 && *i < 19) {
     return 3;
+  }
   return 0;
 }
 
@@ -65,13 +69,12 @@ int check_parameter(char cmd[][20], int count, int *parameter) {
   char check_char;
 
   while ((index < count) &&
-         (sscanf(cmd[index], "%lf%s", &check_double, &check_char) == 1))
+         (sscanf(cmd[index], "%lf%s", &check_double, &check_char) == 1)) {
     index++;
+  }
   *parameter = index - 1;
-  if (*parameter != (count - 1))
-    return 0;
-  else
-    return 1;
+  
+  return (*parameter != (count - 1)) ? 0 : 1;
 }
 
 linkedlist *create(double item) {
@@ -101,8 +104,9 @@ void add(double n) {
 
   linkedlist *ptr = create(n);
 
-  if (first == NULL)
+  if (first == NULL) {
     first = last = ptr;
+  }
   else {
     last->next = ptr;
     last = ptr;
@@ -113,8 +117,9 @@ void push(double item) {
 
   linkedlist *ptr = create(item);
 
-  if (first == NULL)
+  if (first == NULL) {
     first = last = ptr;
+  }
   else {
     ptr->next = first;
     first = ptr;
@@ -126,21 +131,24 @@ void sort() {
   linkedlist *ptr_i, *ptr_j;
   double x;
 
-  for (ptr_i = first; ptr_i->next != NULL; ptr_i = ptr_i->next)
-    for (ptr_j = ptr_i->next; ptr_j != NULL; ptr_j = ptr_j->next)
+  for (ptr_i = first; ptr_i->next != NULL; ptr_i = ptr_i->next) {
+    for (ptr_j = ptr_i->next; ptr_j != NULL; ptr_j = ptr_j->next) {
       if (ptr_j->info < ptr_i->info) {
         x = ptr_i->info;
         ptr_i->info = ptr_j->info;
         ptr_j->info = x;
       }
+    }
+  }
 }
 
 int sorted() {
 
   linkedlist *ptr = first;
   while (ptr != NULL && ptr->next != NULL && linkedlist_size() > 1) {
-    if (ptr->info > ptr->next->info)
+    if (ptr->info > ptr->next->info) {
       return 0;
+    }
     ptr = ptr->next;
   }
   return 1;
@@ -150,8 +158,9 @@ void insert(double item) {
 
   int _sorted = sorted();
 
-  if (_sorted == 0)
+  if (_sorted == 0) {
     printf("answer> can't insert please sort before\n");
+  }
   else if (_sorted == 1 || linkedlist_size() == 0) {
     add(item);
     sort();
@@ -160,10 +169,12 @@ void insert(double item) {
 
 void peek(double n) {
 
-  if (n == -1)
+  if (n == -1) {
     peek(linkedlist_size() - 1);
-  else if (n >= linkedlist_size())
+  }
+  else if (n >= linkedlist_size()) {
     printf("answer> Maximum peek = %d\n", linkedlist_size() - 1);
+  }
   else {
     linkedlist *ptr;
     ptr = first;
@@ -182,8 +193,9 @@ void list() {
 
   int count = 0;
   ptr = first;
-  if (ptr == NULL)
+  if (ptr == NULL) {
     printf("list> NULL\n");
+  }
   else {
     printf("list> ");
     while (ptr != NULL) {
@@ -208,10 +220,8 @@ int search(double item, int start) {
     ptr = ptr->next;
     index++;
   }
-  if (ptr != NULL)
-    return index;
-  else
-    return -1;
+  
+  return (ptr != NULL) ? index : -1;
 }
 
 linkedlist *_delete(int pos) {
@@ -247,18 +257,21 @@ void delete (double item) {
 
   char ch = '\0';
   int pos = search(item, 0);
-  if (pos == -1)
+  if (pos == -1) {
     printf("answer> %.0lf not found\n", item);
-  else
+  }
+  else {
     for (int run = 0; run < linkedlist_size() && pos != -1; run++) {
       printf("navigation ");
       list();
       printf("answer> %.0lf found at [%d] enter y to confirm ", item, pos);
       scanf("%s", &ch);
-      if (ch == 'y')
+      if (ch == 'y') {
         _delete(pos);
+      }
       pos = search(item, pos + 1);
     }
+  }
 }
 
 linkedlist *pop(double *item) {
@@ -291,8 +304,9 @@ void help() {
                            "insert <list>"};
 
   printf("answer> list of command\n");
-  for (int i = 0; i < 19; i++)
+  for (int i = 0; i < 19; i++) {
     printf("\t%2d)\t%s\n", i, cmd_list[i]);
+  }
 }
 
 void unary(int i) {
@@ -301,12 +315,15 @@ void unary(int i) {
   linkedlist *x = pop(&item);
   double ans = 0.0;
 
-  if (i == 5)
+  if (i == 5) {
     ans = sqrt(x->info);
-  else if (i == 6)
+  }
+  else if (i == 6) {
     ans = 1 / (x->info);
-  else if (i == 7)
+  }
+  else if (i == 7) {
     ans = -(x->info);
+  }
   push(ans);
   printf("answer> %.0lf\n", ans);
 }
@@ -318,16 +335,21 @@ void binary(int i) {
   linkedlist *b = pop(&item);
   double ans = 0.0;
 
-  if (i == 8)
+  if (i == 8) {
     ans = pow(b->info, a->info);
-  else if (i == 9)
+  }
+  else if (i == 9) {
     ans = (b->info) + (a->info);
-  else if (i == 10)
+  }
+  else if (i == 10) {
     ans = (b->info) - (a->info);
-  else if (i == 11)
+  }
+  else if (i == 11) {
     ans = (b->info) * (a->info);
-  else if (i == 12)
+  }
+  else if (i == 12) {
     ans = (b->info) / (a->info);
+  }
   push(ans);
   printf("answer> %.1lf\n", ans);
 }
@@ -337,20 +359,25 @@ void group1(int i) {
   double item;
 
   if (i < 4) {
-    if (i == 0)
+    if (i == 0) {
       list();
-    else if (i == 2)
+    } 
+    else if (i == 2) {
       sort();
+    }
     else if (i == 3) {
       pop(&item);
       printf("answer> %.0lf\n", item);
     }
-  } else if (i > 4 && i < 8)
+  } else if (i > 4 && i < 8) {
     unary(i);
-  else if (linkedlist_size() == 1)
+  }
+  else if (linkedlist_size() == 1) {
     printf("answer> Can't operation\n");
-  else
+  }
+  else {
     binary(i);
+  }
 }
 
 void group2(int i, char cmd[][20]) {
@@ -358,17 +385,22 @@ void group2(int i, char cmd[][20]) {
   double n;
 
   sscanf(cmd[1], "%lf", &n);
-  if (i == 13)
+  if (i == 13) {
     delete (n);
+  }
   else if (i == 14) {
-    if (search(n, 0) == -1)
+    if (search(n, 0) == -1) {
       printf("answer> %.0lf not found\n", n);
-    else
+    }
+    else {
       printf("answer> found %.0lf at [%d]\n", n, search(n, 0));
-  } else if (i == 15)
+    }
+  } else if (i == 15) {
     peek(n);
-  else if (i == 16)
+  }
+  else if (i == 16) {
     push(n);
+  }
 }
 
 void group3(int i, char cmd[][20], int parameter) {
@@ -381,32 +413,44 @@ void group3(int i, char cmd[][20], int parameter) {
     j++;
   }
   j = 0;
-  if (i == 17)
-    while (j < parameter)
+  if (i == 17) {
+    while (j < parameter) {
       add(n[j++]);
-  else if (i == 18)
-    while (j < parameter)
+    }
+  }
+  else if (i == 18) {
+    while (j < parameter) {
       insert(n[j++]);
+    }
+  }
 }
 
 void check_command(char cmd[][20], int group, int parameter, int i) {
 
-  if (group == 1 && parameter == 0)
-    if (linkedlist_size() == 0 && i != 1)
+  if (group == 1 && parameter == 0) {
+    if (linkedlist_size() == 0 && i != 1) {
       printf("answer> No data\n");
-    else
+    }
+    else {
       group1(i);
+    }
+  }
   else if (group == 2 && parameter == 1) {
-    if (linkedlist_size() == 0 && i != 16)
+    if (linkedlist_size() == 0 && i != 16) {
       printf("answer> No data\n");
-    else
+    }
+    else {
       group2(i, cmd);
-  } else if (group == 3 && parameter >= 1)
+    }
+  } else if (group == 3 && parameter >= 1) {
     group3(i, cmd, parameter);
-  else if (group != 0 && parameter == 0)
+  }
+  else if (group != 0 && parameter == 0) {
     printf("answer> syntax error\n");
-  else
+  }
+  else {
     printf("answer> parameter error\n");
+  }
 }
 
 int main() {
@@ -423,14 +467,18 @@ int main() {
     rewind(stdin);
     read_to_array(str, cmd, &count);
     group = check_first_element(cmd, &i);
-    if (i == 4)
+    if (i == 4) {
       help();
-    else if (group == 0)
+    }
+    else if (group == 0) {
       printf("answer> syntax error\n");
-    else if (check_parameter(cmd, count, &parameter) == 0)
+    }
+    else if (check_parameter(cmd, count, &parameter) == 0) {
       printf("answer> parameter error\n");
-    else
+    }
+    else {
       check_command(cmd, group, parameter, i);
+    }
   } while (i != 1);
 
   printf("\nEnd program\n");
